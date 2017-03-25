@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import bin.MessageProtocol;
 
-public class client
+public class Client
 {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException
@@ -29,7 +29,7 @@ public class client
 				}
 			}
 
-			Socket socket = new Socket(loadbalanceIP,5131);			
+			//Socket socket = new Socket(loadbalanceIP,5131);			
 			
 			/*usage : set [clientNumber]*/
 			int clientNumber = -1;
@@ -45,11 +45,16 @@ public class client
 				}
 	
 			}
-			String command = request(String.format("client%s> ",clientNumber));			
-			String[] commandList = command.split(" ");
+			while(true){
+				Socket socket = new Socket(loadbalanceIP,5131);
+				String command = request(String.format("client%s> ",clientNumber));			
+				String[] commandList = command.split(" ");
 
 
-			sequence = Client2LB(socket, commandList, sequence, clientNumber);
+				sequence = client2LB(socket, commandList, sequence, clientNumber);
+				//Socket sock = new Socket(loadbalanceIP,5131);	
+			}
+			
 		}
 
 		catch(IOException e)
@@ -59,7 +64,7 @@ public class client
 		//System.exit(0);
 	}
 
-	private static String request(String question){
+	public static String request(String question){
 		System.out.print(question);
 		try{
 			BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
@@ -72,7 +77,7 @@ public class client
 	}
 
 
-	private static int Client2LB(Socket socket, String[] commandList, int sequence, int clientNumber) throws IOException, ClassNotFoundException{
+	private static int client2LB(Socket socket, String[] commandList, int sequence, int clientNumber) throws IOException, ClassNotFoundException{
 		String cmd = commandList[0];
 		String key = commandList[1];
 		if ((cmd.equals("put")) && (commandList.length==3))
