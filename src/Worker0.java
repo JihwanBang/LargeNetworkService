@@ -4,7 +4,7 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.io.IOException;
 import bin.MessageProtocol;
-
+import bin.MessageHD2WK;
 
 
 class Worker0{
@@ -23,7 +23,7 @@ class Worker0{
 			while(true){
 				Socket socket = listener.accept();
 				try{
-					MessageProtocol messageRecv = new MessageProtocol();
+					MessageHD2WK messageRecv = new MessageHD2WK();
 					messageRecv.receive(socket);
 					System.out.print(String.format("[Worker %d] ", id));
 					messageRecv.print();

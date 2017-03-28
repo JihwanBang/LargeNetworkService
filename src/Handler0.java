@@ -27,16 +27,20 @@ public class Handler0{
 					messageRecv.print();
 					
 					int hashValue = joaat_hash(messageRecv.key.getBytes());
-					System.out.println(String.format("hashValue %d", hashValue));	
+					System.out.println(String.format("hashValue remain %d", (hashValue%5 +5)%5));	
 
+					socket.close();
+					HD2WK send2WK = new HD2WK(hashValue, messageRecv.key, messageRecv.value);
+					send2WK.start();
 
 				}
 				catch (ClassNotFoundException c){
 					c.printStackTrace();
 				}
-				finally{
+				/*finally{
 					socket.close();
-				}
+
+				}*/
 				
 			}	
 		}
@@ -65,6 +69,28 @@ public class Handler0{
 }
 
 
+
+class HD2WK extends Thread{
+	int hashValue;
+	String key;
+	String value; 
+	public HD2WK(int hashValue, String key, String value){
+		this.hashValue = hashValue;
+		this.key = key;
+		this.value = value;
+	}
+	public void run(){
+		try{
+			Socket socket = new Socket("127.0.0.1", 20000 + (hashValue%5+5)%5);
+			MessageHD2WK msg = new MessageHD2WK();
+			msg.messageUpdate(hashValue, key, value);
+			msg.send(socket);
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+}
 
 class HDCLI extends Thread{
 	int id ;
