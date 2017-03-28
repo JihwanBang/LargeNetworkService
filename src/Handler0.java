@@ -117,3 +117,7 @@ class HDCLI extends Thread{
 		}
 	}
 }
+
+//txtfile 
+//BufferedWriter file = new BuffereWriter(new FileWriter("filename", true)); 
+//continue to write using above command.
