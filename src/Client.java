@@ -45,13 +45,14 @@ public class Client
 				}
 	
 			}
+
 			while(true){
-				Socket socket = new Socket(loadbalanceIP,5131);
+				//Socket socket = new Socket(loadbalanceIP,5131);
 				String command = request(String.format("client%s> ",clientNumber));			
 				String[] commandList = command.split(" ");
 
 
-				sequence = client2LB(socket, commandList, sequence, clientNumber);
+				sequence = client2LB(loadbalanceIP, commandList, sequence, clientNumber);
 				//Socket sock = new Socket(loadbalanceIP,5131);	
 			}
 			
@@ -77,21 +78,28 @@ public class Client
 	}
 
 
-	private static int client2LB(Socket socket, String[] commandList, int sequence, int clientNumber) throws IOException, ClassNotFoundException{
+	//private static int client2LB(Socket socket, String[] commandList, int sequence, int clientNumber) throws IOException, ClassNotFoundException{
+	private static int client2LB(String loadbalanceIP, String[] commandList, int sequence, int clientNumber) throws IOException, ClassNotFoundException{
 		String cmd = commandList[0];
 		String key = commandList[1];
 		if ((cmd.equals("put")) && (commandList.length==3))
 		{
 			String value = commandList[2];
-			return sendAndRecv(socket, clientNumber, sequence, (short) 1, key, value);
+			//return sendAndRecv(socket, clientNumber, sequence, (short) 1, key, value);
+			return sendAndRecv(loadbalanceIP, clientNumber, sequence, (short) 1, key, value);
+				
 		}
 		else if ((cmd.equals("get"))  && (commandList.length==2))
 		{
-			return sendAndRecv(socket, clientNumber, sequence, (short) 3, key, "");
+			//return sendAndRecv(socket, clientNumber, sequence, (short) 3, key, "");
+			return sendAndRecv(loadbalanceIP, clientNumber, sequence, (short) 3, key, "");
+				
 		}
 		else if ((cmd.equals("del")) && (commandList.length==2))
 		{
-			return sendAndRecv(socket, clientNumber, sequence, (short) 5, key, "");
+			//return sendAndRecv(socket, clientNumber, sequence, (short) 5, key, "");
+			return sendAndRecv(loadbalanceIP, clientNumber, sequence, (short) 5, key, "");
+
 		}
 		else{
 			System.out.println("usage : put [key] [value] \n\t get [key] \n\t del [key]\n");
@@ -99,7 +107,9 @@ public class Client
 		}		
 	}
 
-	private static int sendAndRecv(Socket socket, int clientNumber, int sequence, short num, String key, String value) throws IOException, ClassNotFoundException{
+	//private static int sendAndRecv(Socket socket, int clientNumber, int sequence, short num, String key, String value) throws IOException, ClassNotFoundException{
+	private static int sendAndRecv(String loadbalanceIP, int clientNumber, int sequence, short num, String key, String value) throws IOException, ClassNotFoundException{
+		Socket socket = new Socket(loadbalanceIP,5131);
 		MessageProtocol messageSend = new MessageProtocol();
 		messageSend.messageUpdate(clientNumber, sequence, num, (short) 0, key, value);
 		messageSend.send(socket);

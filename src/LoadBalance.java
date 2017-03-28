@@ -14,7 +14,7 @@ import bin.Client;
 
 public class LoadBalance 
 {	
-	public static void main(String[] args) throws IOException, ClassNotFoundException
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException
 	{
 		ServerSocket listener = new ServerSocket(5131);
 		try
@@ -25,11 +25,22 @@ public class LoadBalance
 			cli.start();
 
 			while(true)
-			{ 
+			{
 				Socket socket = listener.accept();
+			 	/*
+				System.out.println("accept!");
+				Socket socket = listener.accept();
+				System.out.println("message recv");
+				
+				MessageProtocol messageRecv = new MessageProtocol();
+				messageRecv.receive(socket);
+				messageRecv.print();
+				*/
+				System.out.println("start thread!");
 				Thread multiClient = new MultiClient(socket,sa);
 				multiClient.start();
-
+				multiClient.join();
+				System.out.println("loop");
 			}
 		
 		}
@@ -46,23 +57,32 @@ public class LoadBalance
 class MultiClient extends Thread{
 	Socket socket; 
 	SharedArea sa;
+
 	public MultiClient(Socket socket, SharedArea sa){
 		this.socket = socket;
+		//this.msg = msg;
 		this.sa = sa;
 	}
+
 	public void run(){
 		try{
-			System.out.println("start thread");
-			MessageProtocol messageRecv = new MessageProtocol();
-			messageRecv.receive(socket);
-			messageRecv.print();
-
-			Thread t = new Load2Handler(messageRecv, sa);
-			t.start();
+			//System.out.println("start thread");
 			
-			messageRecv.replyAck(socket);
+			//Socket socket = listener.accept();
+
+			MessageProtocol msg = new MessageProtocol();
+			msg.receive(socket);
+			msg.print();
+				
+
+			Thread t = new Load2Handler(msg, sa);
+			t.start();
+			t.join();
+			
+			msg.replyAck(socket);
 			socket.close();
 			sa.rr = (sa.rr+1)%3;
+
 		}
 		catch (IOException e){
 			e.printStackTrace();
@@ -70,7 +90,9 @@ class MultiClient extends Thread{
 		catch (ClassNotFoundException c){
 			c.printStackTrace();
 		}
-
+		catch (InterruptedException i){
+			i.printStackTrace();
+		}
 	}
 }
 
@@ -107,7 +129,6 @@ class Load2Handler extends Thread {
 	}
 	public void run() {
 		try{
-			//System.out.println("thread suceess!");
 			Socket socket = new Socket("127.0.0.1", 10000+sa_save.rr);
 			switch (sa_save.rr){
 				case 0 : sa_save.request0 += 1; break;
