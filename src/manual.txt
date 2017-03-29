@@ -1,4 +1,0 @@
-In src directory, 
-
-java bin.[class name]
-
