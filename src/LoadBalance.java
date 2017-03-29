@@ -27,20 +27,11 @@ public class LoadBalance
 			while(true)
 			{
 				Socket socket = listener.accept();
-			 	/*
-				System.out.println("accept!");
-				Socket socket = listener.accept();
-				System.out.println("message recv");
-				
-				MessageProtocol messageRecv = new MessageProtocol();
-				messageRecv.receive(socket);
-				messageRecv.print();
-				*/
-				System.out.println("start thread!");
+
 				Thread multiClient = new MultiClient(socket,sa);
 				multiClient.start();
 				multiClient.join();
-				System.out.println("loop");
+
 			}
 		
 		}
@@ -50,6 +41,7 @@ public class LoadBalance
 			listener.close();
 		}
 	}
+	
 
 
 
@@ -60,28 +52,21 @@ class MultiClient extends Thread{
 
 	public MultiClient(Socket socket, SharedArea sa){
 		this.socket = socket;
-		//this.msg = msg;
 		this.sa = sa;
 	}
 
 	public void run(){
 		try{
-			//System.out.println("start thread");
-			
-			//Socket socket = listener.accept();
+
 
 			MessageProtocol msg = new MessageProtocol();
 			msg.receive(socket);
 			msg.print();
 				
-
-			Thread t = new Load2Handler(msg, sa);
-			t.start();
-			t.join();
-			
-			msg.replyAck(socket);
-			socket.close();
+			msg = load2Handler(msg,sa);
 			sa.rr = (sa.rr+1)%3;
+			System.out.println("hello!");
+			msg.send(socket);
 
 		}
 		catch (IOException e){
@@ -90,9 +75,22 @@ class MultiClient extends Thread{
 		catch (ClassNotFoundException c){
 			c.printStackTrace();
 		}
-		catch (InterruptedException i){
-			i.printStackTrace();
+		
+	}
+	private MessageProtocol load2Handler(MessageProtocol msg, SharedArea sa_save) throws ClassNotFoundException,UnknownHostException, IOException{
+
+		Socket socket = new Socket("127.0.0.1", 10000+sa_save.rr);
+		switch (sa_save.rr){
+			case 0 : sa_save.request0 += 1; break;
+			case 1 : sa_save.request1 += 1; break;
+			case 2 : sa_save.request2 += 1; break;
+			default : System.out.println("Wrong Port Number!");
 		}
+		msg.send(socket);
+		MessageProtocol reply = new MessageProtocol();
+		reply.receive(socket);
+		return reply;
+
 	}
 }
 
@@ -120,30 +118,6 @@ class LBCLI extends Thread{
 
 }
 
-class Load2Handler extends Thread {
-	MessageProtocol msg; 
-	SharedArea sa_save;
-	public Load2Handler(MessageProtocol msg, SharedArea sa){
-		this.msg = msg;
-		this.sa_save = sa;
-	}
-	public void run() {
-		try{
-			Socket socket = new Socket("127.0.0.1", 10000+sa_save.rr);
-			switch (sa_save.rr){
-				case 0 : sa_save.request0 += 1; break;
-				case 1 : sa_save.request1 += 1; break;
-				case 2 : sa_save.request2 += 1; break;
-				default : System.out.println("Wrong Port Number!");
-			}
-			msg.send(socket);	
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-		
-	}
-}
 
 class SharedArea{
 	int request0 = 0;

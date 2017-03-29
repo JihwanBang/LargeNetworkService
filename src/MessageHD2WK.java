@@ -10,11 +10,13 @@ import java.util.Calendar;
 
 
 public class MessageHD2WK implements Serializable{
+	int command;
 	int hashValue;
 	String key;
 	String value;
 
-	public void messageUpdate(int hashValue, String key, String value){
+	public void messageUpdate(int command, int hashValue, String key, String value){
+		this.command = command;
 		this.hashValue = hashValue;
 		this.key = key;
 		this.value = value;
@@ -28,7 +30,7 @@ public class MessageHD2WK implements Serializable{
 	public void receive(Socket socket) throws IOException, ClassNotFoundException{
 		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 		MessageHD2WK msg = (MessageHD2WK) ois.readObject();
-		messageUpdate(msg.hashValue, msg.key, msg.value);
+		messageUpdate(msg.command, msg.hashValue, msg.key, msg.value);
 	}
 	public void print(){
 		System.out.println(String.format("%d %s %s",hashValue, key, value));

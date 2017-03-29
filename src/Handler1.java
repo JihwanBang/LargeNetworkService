@@ -12,8 +12,11 @@ public class Handler1{
 			int num = 1;
 			Thread cli = new HDCLI(num);
 			cli.start();
+			HDsync sync = new HDsync();
+			Thread syncServer = new Synchronization(sync, num);
+			syncServer.start();
 			Handler0 hd = new Handler0();
-			hd.handlerConnection(num);
+			hd.handlerConnection(sync,num);
 
 			
 	}

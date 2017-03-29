@@ -60,28 +60,21 @@ public class MessageProtocol implements Serializable{
 	public void replyAck(Socket socket) throws IOException{
 		if (this.command == (short) 1){
 			System.out.println("put success!");
-			reply(socket,(short) 2, (short) 1, "", "");
+			send(socket);
 		}
 		else if (this.command == (short) 3){
 			System.out.println("get success!");
-			reply(socket,(short) 4, (short) 1, this.key, "");
+			send(socket);
 		}
 		else if (this.command == (short) 5){
 			System.out.println("del success!");
-			reply(socket,(short) 6, (short) 1, this.key, "");
+			send(socket);
 		}
 		else {
 			System.out.println("wrong command!");
-			reply(socket,(short) -1, (short) -1, "", "");
+			send(socket);
 		}
 	}
-
-	private void reply(Socket socket,short cmd, short code, String key, String value) throws IOException{
-		MessageProtocol messageSend = new MessageProtocol();
-		messageSend.messageUpdate(this.clientID, this.sequence, cmd, code, key, value);
-		messageSend.send(socket);		
-	}
-		
 	public void print(){
 		System.out.println(this.clientID + " " + this.sequence + " " + this.command + " " + this.code + " " + this.keyLength + " " + this.valueLength + 
 			" " + this.key + " "+ this.value);
