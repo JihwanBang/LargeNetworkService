@@ -77,7 +77,7 @@ public class MessageHD2WK implements Serializable{
 		long time = System.currentTimeMillis(); 
 		SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 		String str = dayTime.format(new Date(time));
-		fw.write(String.format("%s %d %s %s\n", str, hashValue, key, value));
+		fw.write(String.format("%s %d %d %s %s\n", str, command, hashValue, key, value));
 		fw.flush();
 	}
 	
