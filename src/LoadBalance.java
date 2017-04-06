@@ -133,7 +133,8 @@ class LBCLI extends Thread{
 	public void run(){
 		while(true){
 			Client c = new Client();
-			String cmd = c.request("LB> "); 
+			BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+			String cmd = c.request("LB> ", bufferRead); 
 			if (cmd.equals("list")){
 				System.out.println("[Handler ID] / [Handler IP/port] / [# of requests]");
 				System.out.println(String.format("0 / 127.0.0.1/10000 / %d", sa_read.request0));

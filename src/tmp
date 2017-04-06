@@ -1,0 +1,14 @@
+connect 127.0.0.1
+set 0
+put hello helloworld
+get hello
+put jihwan Bang
+put hi youngjo
+put kwak suyon
+del hi
+del jihwan
+put asd asdfb
+del asd 
+put qwe qwerty 
+put zxc zxcvbg
+put lkj opoiuer

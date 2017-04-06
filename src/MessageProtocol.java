@@ -89,7 +89,7 @@ public class MessageProtocol implements Serializable{
 			System.out.println("Fail (reason: not exist)");
 		}
 		else if (this.code == (short) 3){ //already exist
-			System.out.println("Fail (reason : already exist");
+			System.out.println("Fail (reason : already exist)");
 		}
 		else{
 			System.out.println("Wrong ACK!");
@@ -112,8 +112,6 @@ public class MessageProtocol implements Serializable{
 		fw.write(String.format("%s %d %d %d %d %d %d %s %s\n", str, this.clientID, this.sequence, this.command,
 			this.code, this.keyLength, this.valueLength, this.key, this.value));
 		fw.flush();
-		//System.out.println(this.clientID + " " + this.sequence + " " + this.command + " " + this.code + " " + this.keyLength + " " + this.valueLength + 
-		//	" " + this.key + " "+ this.value);
 	}
 
 }

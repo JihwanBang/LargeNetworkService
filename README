@@ -1,0 +1,25 @@
+When you run the java process, the directory is p1. 
+
+1. Client 
+java bin.Client
+
+2. LoadBalance 
+java bin.LoadBalance 
+
+3. Handler 
+java bin.Handler0
+java bin.Handler1
+java bin.Handler2 
+
+4. Worker 
+java bin.Worker0
+java bin.Worker1
+java bin.Worker2
+java bin.Worker3
+java bin.Worker4
+
+To satisfy CLI requirements, we must use a java process per a command window.
+(If you want to use all the system (e.g. 2 clients), then you must open 11 command windows)
+
+(Optional) burst data 
+If you use the file which is consist of all the instructions, then use “cat [file name] | java bin.Client”.  

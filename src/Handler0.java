@@ -7,6 +7,8 @@ package bin;
 
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.IOException;
 import java.io.File;
@@ -284,7 +286,8 @@ class HDCLI extends Thread{
 	public void run(){
 		while(true){
 			Client c = new Client();
-			String cmd = c.request(String.format("HD# %d>",id));
+			BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+			String cmd = c.request(String.format("HD# %d>",id), bufferRead);
 			String[] cmdSplit = cmd.split(" ");
 			
 			HDsync hd = new HDsync();

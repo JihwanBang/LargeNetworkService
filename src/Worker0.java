@@ -10,6 +10,8 @@ import java.net.ServerSocket;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import bin.MessageProtocol;
 import bin.MessageHD2WK;
@@ -106,7 +108,8 @@ class WKCLI extends Thread{
 	public void run(){
 		while(true){
 			Client c = new Client();
-			String cmd = c.request(String.format("WK# %d> ", id));
+			BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+			String cmd = c.request(String.format("WK# %d> ", id),bufferRead);
 			String[] cmdList = cmd.split(" ");
 			WKlist wkList = new WKlist();
 

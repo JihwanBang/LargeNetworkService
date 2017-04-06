@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.Socket;
+import java.util.Scanner;
 import bin.MessageProtocol;
 
 public class Client
@@ -25,12 +26,12 @@ public class Client
 	public static void main(String[] args) throws IOException, ClassNotFoundException
 	{
 		int sequence = 0;
-		
+		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 		try{
 			/*usage : connect [LB IP]*/
 			String loadbalanceIP = "";
 			while(true){
-				String[] connectionList = request("client> ").split(" ");
+				String[] connectionList = request("client> ",bufferRead).split(" ");
 
 				if (connectionList.length == 2 && connectionList[0].equals("connect")){
 					loadbalanceIP = connectionList[1];
@@ -45,8 +46,7 @@ public class Client
 			/*usage : set [clientNumber]*/
 			int clientNumber = -1;
 			while(true){
- 
-				String[] clientNumberList = request("client> ").split(" ");	
+				String[] clientNumberList = request("client> ", bufferRead).split(" ");	
 				if(clientNumberList.length == 2 && clientNumberList[0].equals("set")){
 					clientNumber = Integer.parseInt(clientNumberList[1]);
 					break;
@@ -61,7 +61,7 @@ public class Client
 			FileWriter fw = new FileWriter(file);
 
 			while(true){
-				String command = request(String.format("client%s> ",clientNumber));			
+				String command = request(String.format("client%s> ",clientNumber), bufferRead);			
 				String[] commandList = command.split(" ");
 
 
@@ -79,14 +79,14 @@ public class Client
 	/*
 	Usage : scan the data written in CLI. 
 	Input 
-		-question : String that we want to ask 
+		-question : String that we want to ask
+		-bufferRead : BufferedReader 
 	Output
 		-buffer : data written in CLI  
 	*/
-	public static String request(String question){
+	public static String request(String question, BufferedReader bufferRead){
 		System.out.print(question);
 		try{
-			BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 			String buffer = bufferRead.readLine();
 			return buffer;
 		}
